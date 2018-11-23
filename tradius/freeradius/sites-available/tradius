@@ -1,0 +1,83 @@
+server tradius {
+
+	listen {
+		type = auth
+		ipaddr = *
+		port = 0
+		limit {
+		      max_connections = 16
+		      lifetime = 0
+		      idle_timeout = 30
+		}
+	}
+
+	listen {
+		ipaddr = *
+		port = 0
+		type = acct
+		limit {
+		}
+	}
+
+	listen {
+		type = auth
+		ipv6addr = ::	# any.  ::1 == localhost
+		port = 0
+		limit {
+		      max_connections = 16
+		      lifetime = 0
+		      idle_timeout = 30
+		}
+	}
+
+	listen {
+		ipv6addr = ::
+		port = 0
+		type = acct
+		limit {
+		}
+	}
+
+	authorize {
+		filter_username
+		filter_password
+		preprocess
+		sql
+		pap
+	}
+
+
+	authenticate {
+		Auth-Type PAP {
+			pap
+		}
+	}
+
+
+	preacct {
+		acct_unique
+		preprocess
+		acct_counters64
+		suffix
+	}
+
+	accounting {
+		sql
+		attr_filter.accounting_response
+	}
+
+
+	session {
+		sql
+	}
+
+
+	post-auth {
+	}
+
+	pre-proxy {
+	}
+
+	post-proxy {
+	}
+}

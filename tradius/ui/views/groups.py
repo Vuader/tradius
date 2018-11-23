@@ -33,6 +33,7 @@ from luxon import register
 from luxon import render_template
 from luxon.utils.bootstrap4 import form
 
+from tradius.lib.ops import ops
 from tradius.ui.models.groups import tradius_group
 
 g.nav_menu.add('/Infrastructure/Radius/Groups',
@@ -109,7 +110,8 @@ class Groups():
             return render_template('tradius.ui/groups/edit.html',
                                    view='Edit Subscriber Group',
                                    form=html_form,
-                                   id=id)
+                                   id=id,
+                                   ops=ops)
 
     def add(self, req, resp):
         if req.method == 'POST':

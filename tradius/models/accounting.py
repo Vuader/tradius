@@ -35,7 +35,7 @@ from luxon.utils.timezone import now
 
 @register.model()
 class tradius_accounting(SQLModel):
-    radacctid = SQLModel.BigInt(max_length=21)
+    id = SQLModel.Uuid(default=uuid4, internal=True)
     acctsessionid = SQLModel.String(max_length=64, null=False, default='')
     acctuniqueid = SQLModel.String(max_length=32, null=False, default='')
     username = SQLModel.String(max_length=64, null=False, default='')
@@ -46,22 +46,22 @@ class tradius_accounting(SQLModel):
     acctstarttime = SQLModel.DateTime()
     acctupdatetime = SQLModel.DateTime()
     acctstoptime = SQLModel.DateTime()
-    acctinterval = SQLModel.Integer(max_length=12, null=True, default=None)
+    acctinterval = SQLModel.Integer(null=True, default=None)
     acctsessiontime = SQLModel.Integer(signed=False, null=True,
-                                       max_length=12, default=None)
+                                       default=None)
     acctauthentic = SQLModel.String(null=True, default=None, max_length=32)
     connectinfo_start = SQLModel.String(max_length=50, null=True,
                                         default=None)
     connectinfo_stop = SQLModel.String(max_length=50, null=True, default=None)
-    acctinputoctets = SQLModel.BigInt(max_length=20, null=True, default=None)
-    acctoutputoctets = SQLModel.BigInt(max_length=20, null=True, default=None)
+    acctinputoctets = SQLModel.BigInt(null=True, default=None)
+    acctoutputoctets = SQLModel.BigInt(null=True, default=None)
     calledstationid = SQLModel.String(max_length=50, null=False, default='')
     callingstationid = SQLModel.String(max_length=50, null=False, default='')
     acctterminatecause = SQLModel.String(max_length=32, null=False, default='')
     servicetype = SQLModel.String(max_length=32, default=None, null=True)
     framedprotocol = SQLModel.String(max_length=32, default=None, null=True)
     framedipaddress = SQLModel.String(max_length=15, default='', null=False)
-    primary_key = radacctid
+    primary_key = id
     acctuniqueid_index = SQLModel.UniqueIndex(acctuniqueid)
     username_index = SQLModel.Index(username, nasipaddress)
     framedipaddress_index = SQLModel.Index(framedipaddress, nasipaddress)
