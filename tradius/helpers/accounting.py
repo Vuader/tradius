@@ -29,11 +29,35 @@
 # THE POSSIBILITY OF SUCH DAMAGE.
 
 from luxon import db
+from luxon.utils.sql import build_where, build_like
 
-def get_acct(domain=None, tenant_id=None, username=None):
+def get_cdr(domain=None, tenant_id=None, username=None, session=False, page=1, limit=10, search=None):
+    start = (page - 1) * limit
+
+    where_query = {}
+    if domain:
+        where_query['tradius_nas.domain'] = domain
+    if tenant_id:
+        where_query['tenant_id'] = tenant_id
+    if username:
+        where_query['tradius_accounting.username'] = username
+    if session:
+        where_query['tradius_accounting.acctstoptime'] = None
+
+    where, values = build_where(**where_query)
+
+    if search:
+        where2, values2 = build_like('OR', **search)
+        if where2:
+            if where:
+                where += " AND (" + where2 + ")"
+            else:
+                where = where2
+            values += values2
+
     with db() as conn:
-        query = 'SELECT' + \
-                ' tradius_accounting.radacctid as radacctid,' + \
+        query = 'SELECT DISTINCT' + \
+                ' tradius_accounting.id as id,' + \
                 ' tradius_accounting.acctsessionid as acctsessionid,' + \
                 ' tradius_accounting.acctuniqueid as acctuniqueid,' + \
                 ' tradius_accounting.username as username,' + \
@@ -55,14 +79,21 @@ def get_acct(domain=None, tenant_id=None, username=None):
                 ' tradius_accounting.acctterminatecause as acctterminatecause,' + \
                 ' tradius_accounting.servicetype as servicetype,' + \
                 ' tradius_accounting.framedprotocol as framedprotocol,' + \
-                ' tradius_accounting.framedipaddress as framedipaddress,' + \
+                ' tradius_accounting.framedipaddress as framedipaddress' + \
                 ' FROM' + \
-                ' tradius_user_group LEFT JOIN tradius_group ON' + \
-                ' tradius_user_group.group_id = tradius_group.id' + \
-                ' WHERE tradius_user_group.user_id = %s'
+                ' tradius_accounting INNER JOIN tradius_nas ON' + \
+                ' tradius_accounting.nasipaddress = tradius_nas.server' + \
+                ' INNER JOIN tradius_user ON' + \
+                ' tradius_nas.virtual_id = tradius_user.virtual_id' + \
+                ' AND' + \
+                ' tradius_accounting.username = tradius_user.username'
+        if where:
+            query += ' WHERE %s' % where
 
-        crsr = conn.execute(query, user_id)
-        groups = crsr.fetchall()
+        query += ' LIMIT %s, %s' % (start, limit,)
 
-    return groups
+        crsr = conn.execute(query, values)
+        records = crsr.fetchall()
+
+    return records
 

@@ -23,8 +23,9 @@
 	 </div>
 	 <div class="col-sm-2">
 		 <select name="op" class="form-control">
-			<option value="=">=</option>
-			<option value="+=">+=</option>
+			 {% for op in ops %}
+			 <option value="{{op}}">{{op}}</option>
+			 {% endfor %}
 		</select>
 	 </div>
 	 <div class="col-sm-3">
