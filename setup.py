@@ -280,11 +280,11 @@ setup_dict = dict(
     cmdclass=cmdclass,
     ext_modules=ext_modules,
     zip_safe=False,  # don't use eggs
-    # entry_points={
-    #    'console_scripts': [
-    #        'luxon = tradius.main:entry_point'
-    #    ],
-    # }
+    entry_points={
+        'console_scripts': [
+            'tradius = tradius.main:entry_point'
+        ],
+    }
 )
 
 
