@@ -44,7 +44,6 @@ class tradius_user_attr(SQLModel):
     attribute = SQLModel.String()
     op = SQLModel.String(max_length=2)
     value = SQLModel.String()
-    ctx = SQLModel.Enum('reply', 'check')
     creation_time = SQLModel.DateTime(readonly=True, default=now)
     user_attr_ref = SQLModel.ForeignKey(user_id, tradius_user.id)
     user_attrs = SQLModel.Index(user_id)

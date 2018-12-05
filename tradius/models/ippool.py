@@ -33,6 +33,8 @@ from luxon import register
 from luxon import SQLModel
 from luxon.utils.timezone import now
 
+from tradius.models.pool import tradius_pool
+
 @register.model()
 class tradius_ippool(SQLModel):
     id = SQLModel.BigInt()
@@ -40,6 +42,8 @@ class tradius_ippool(SQLModel):
     pool_name = SQLModel.String(max_length=30, null=False)
     framedipaddress = SQLModel.String(max_length=15, default='', null=False)
     nasipaddress = SQLModel.String(max_length=15, null=False, default = '')
+    calledstationid = SQLModel.String(max_length=30, null=True)
+    callingstationid = SQLModel.String(max_length=30, null=True)
     expiry_time = SQLModel.DateTime(null=True, default=None)
     username = SQLModel.String(max_length=64, default='', null=False)
     pool_key = SQLModel.String(max_length=30, null=False)
@@ -48,3 +52,5 @@ class tradius_ippool(SQLModel):
     framedipaddress_index = SQLModel.Index(framedipaddress)
     nasip_poolkey_ipaddress_index = SQLModel.Index(nasipaddress, pool_key,
                                                    framedipaddress)
+    unique_pool_ip = SQLModel.UniqueIndex(pool_name, framedipaddress)
+    pool_name_ref = SQLModel.ForeignKey(pool_name, tradius_pool.pool_name)

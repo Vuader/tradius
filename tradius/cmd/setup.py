@@ -4,7 +4,7 @@ from luxon.utils.files import rm
 from luxon import register
 
 
-@register.resource('freeradius', '/setup')
+@register.resource('radius', '/setup')
 def setup(req, resp):
     module = Module('tradius')
     rm('/etc/freeradius/3.0', recursive=True)

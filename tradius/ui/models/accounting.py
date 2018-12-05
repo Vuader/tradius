@@ -29,7 +29,6 @@
 # THE POSSIBILITY OF SUCH DAMAGE.
 from uuid import uuid4
 
-from luxon import register
 from luxon import Model
 from luxon.utils.timezone import now
 

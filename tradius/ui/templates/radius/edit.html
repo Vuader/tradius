@@ -11,7 +11,6 @@
                 <th id='attribute'>Attribute</th>
                 <th id='op'>Operation</th>
                 <th id='value'>Value</th>
-                <th id='ctx'>Context</th>
 				<th data-confirm="Remove attribute value pair from user?" data-href="/services/radius/rm_attr/{{id}}" data-close width="2rem">
 					<span data-feather="minus-square"></span>
 				</th>
@@ -25,18 +24,13 @@
 		 </div>
 		 <div class="col-sm-2">
 			 <select name="op" class="form-control">
-				<option value="=">=</option>
-				<option value="+=">+=</option>
+             {% for op in ops %}
+             <option value="{{op}}">{{op}}</option>
+             {% endfor %}
 			</select>
 		 </div>
 		 <div class="col-sm-3">
 			<input class="form-control" type="text" name="value" placeholder="Value">
-		 </div>
-		 <div class="col-sm-2">
-			 <select name="ctx" class="form-control">
-				<option value="reply">Reply</option>
-				<option value="check">Check</option>
-			</select>
 		 </div>
 		 <div class="col-sm-2">
 			  <input class="form-control btn btn-danger" type="submit" value="Add AVP" >

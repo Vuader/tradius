@@ -27,13 +27,19 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
-from uuid import uuid4
 
-from luxon import SQLModel
-from luxon.utils.timezone import now
+from luxon import db
+from luxon.helpers.rmq import rmq
+from luxon.utils.sql import build_where
+from luxon import js 
 
-class tradius_virtual(SQLModel):
-    id = SQLModel.Uuid(default=uuid4, internal=True)
-    domain = SQLModel.Fqdn(internal=True)
-    name = SQLModel.String(max_length=64, null=False)
-    primary_key = id
+def append(name, prefix, domain):
+    with rmq() as mb:
+        with db() as conn:
+            message = {
+                'type': 'append_pool',
+                'pool': {'name': name,
+                         'prefix': prefix,
+                         'domain': domain}
+            }
+            mb.distribute('tradius', **message)
