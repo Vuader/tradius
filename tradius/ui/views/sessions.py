@@ -51,7 +51,7 @@ class Accounting():
                    tag='services:view')
 
         router.add('GET',
-                   '/infrastructure/radius/pod/{id}',
+                   '/infrastructure/radius/pod/{acct_id}',
                    self.pod,
                    tag='services:admin')
 
@@ -59,5 +59,7 @@ class Accounting():
         return render_template('tradius.ui/sessions/list.html',
                                view='Radius Accounting')
 
-    def pod(self, req, resp, id):
-        pass
+    def pod(self, req, resp, acct_id):
+       req.context.api.execute('PUT', '/v1/pod/%s' % acct_id,
+                        endpoint='radius')
+

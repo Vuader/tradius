@@ -29,11 +29,10 @@
 # THE POSSIBILITY OF SUCH DAMAGE.
 from uuid import uuid4
 
-from luxon import SQLModel
+from luxon import Model
 from luxon.utils.timezone import now
 
-class tradius_virtual(SQLModel):
-    id = SQLModel.Uuid(default=uuid4, internal=True)
-    domain = SQLModel.Fqdn(internal=True)
-    name = SQLModel.String(max_length=64, null=False)
-    primary_key = id
+class tradius_pool(Model):
+    id = Model.Uuid(default=uuid4, internal=True)
+    domain = Model.Fqdn(internal=True)
+    pool_name = Model.String(max_length=30, null=False)

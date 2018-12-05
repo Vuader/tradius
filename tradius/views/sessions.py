@@ -31,6 +31,7 @@ from luxon import register
 from luxon import router
 from luxon.helpers.api import raw_list, search_params
 
+from tradius.helpers.coa import pod
 from tradius.helpers.accounting import get_cdr
 
 @register.resources()
@@ -39,7 +40,7 @@ class Accounting(object):
         # Services Users
         router.add('GET', '/v1/sessions', self.sessions,
                 tag='services:view')
-        router.add('GET', '/v1/pod/{id}', self.pod,
+        router.add('PUT', '/v1/pod/{acct_id}', self.pod,
                 tag='services:admin')
 
     def sessions(self, req, resp):
@@ -62,5 +63,5 @@ class Accounting(object):
 
         return raw_list(req, results, limit=limit, context=False, sql=True)
 
-    def pod(self, req, resp, session_id):
-        pass
+    def pod(self, req, resp, acct_id):
+        pod(acct_id)

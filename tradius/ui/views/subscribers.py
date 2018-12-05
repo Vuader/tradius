@@ -119,6 +119,7 @@ class Subscribers():
             return render_template('tradius.ui/radius/edit.html',
                                    form=html_form,
                                    id=id,
+                                   ops=ops,
                                    view="Edit Subscriber")
 
     def add(self, req, resp):

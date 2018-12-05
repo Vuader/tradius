@@ -1,4 +1,5 @@
 import tradius.models.accounting
+import tradius.models.pool
 import tradius.models.ippool
 import tradius.models.groups
 import tradius.models.group_attrs

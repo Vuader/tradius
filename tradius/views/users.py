@@ -40,6 +40,7 @@ from tradius.models.users import tradius_user
 from tradius.models.user_groups import tradius_user_group
 from tradius.models.user_attrs import tradius_user_attr
 from tradius.helpers.groups import get_user_groups
+from tradius.helpers.users import disconnect
 
 from tradius.lib.avps import avps
 
@@ -98,16 +99,23 @@ class Users(object):
     def update(self, req, resp, id):
         user = obj(req, tradius_user, sql_id=id,
                    hide=('password',))
+
         if req.json.get('password'):
             user['password'] = md5sum(req.json['password'])
 
+        if req.json.get('enabled'):
+            if user['enabled'] is False:
+                disconnect(user['virtual_id'],
+                           user['username'])
+            
         user.commit()
         return user
 
     def delete(self, req, resp, id):
         user = obj(req, tradius_user, sql_id=id)
+        disconnect(user['virtual_id'],
+                   user['username'])
         user.commit()
-
 
     def groups(self, req, resp, user_id):
         user = tradius_user()
@@ -137,7 +145,7 @@ class Users(object):
         validate_access(req, user)
         where = { 'user_id': user_id }
         return sql_list(req, 'tradius_user_attr',
-                        ('id', 'attribute', 'op', 'value', 'ctx', ),
+                        ('id', 'attribute', 'op', 'value',),
                         where=where)
        
     def add_attr(self, req, resp, user_id):

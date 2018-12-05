@@ -27,13 +27,26 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
-from uuid import uuid4
 
-from luxon import SQLModel
-from luxon.utils.timezone import now
+from luxon import db
+from luxon.helpers.rmq import rmq
+from luxon.utils.sql import build_where
+from luxon import js 
+from tradius.helpers.coa import pod
 
-class tradius_virtual(SQLModel):
-    id = SQLModel.Uuid(default=uuid4, internal=True)
-    domain = SQLModel.Fqdn(internal=True)
-    name = SQLModel.String(max_length=64, null=False)
-    primary_key = id
+
+def disconnect(virtual_id, username=None):
+    with db() as conn:
+        nas_nodes = conn.execute(
+            'SELECT * FROM tradius_nas' +
+            ' WHERE virtual_id = %s', virtual_id).fetchall()
+        for nas in nas_nodes:
+            sql = 'SELECT * FROM tradius_accounting WHERE '
+            where = {'nasipaddress': nas['server']}
+            if username:
+                where = {'username': username}
+
+            where, values = build_where(**where)
+            acct = conn.execute(sql + where, values).fetchall()
+            for session in acct:
+                pod(session['id'])

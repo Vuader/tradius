@@ -45,8 +45,8 @@ class tradius_subscriber(Model):
     phone_mobile = Model.Phone(placeholder="+1-202-555-0103")
     phone_office = Model.Phone(placeholder="+1-202-555-0105")
     designation = Model.Enum('', 'Mr', 'Mrs', 'Ms', 'Dr', 'Prof')
-    user_class = Model.Word(max_length=32, null=True, label="User Class for DPI")
-    logins = Model.Integer(null=False, default=1, label='Simultaneous Sessions')
+    dpi = Model.String(max_length=20, placeholder='Shaped1',
+                         label='DPI Class')
     enabled = Model.Boolean(default=True)
     creation_time = Model.DateTime(default=now, readonly=True)
     primary_key = id
