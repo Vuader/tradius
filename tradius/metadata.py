@@ -12,6 +12,7 @@ project_no_spaces = project.replace(' ', '')
 version = '0.0.0'
 description = 'Tachyonic FreeRadius Endpoint'
 author = 'Myria Solutions (PTY) Ltd'
+authors_string = 'Myria Solutions (PTY) Ltd'
 email = 'project@tachyonic.org'
 license = 'BSD3-Clause'
 copyright = '2018 ' + author
